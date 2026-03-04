@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="/css/views/login.css">
+
+<div class="auth-container">
+    <h1>Iniciar Sesión</h1>
+    
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" name="email" required placeholder="tu@email.com">
+        </div>
+        
+        <div class="form-group last">
+            <label>Contraseña:</label>
+            <input type="password" id="password" name="password" required placeholder="••••••••">
+        </div>
+        
+        <button type="submit" class="btn-submit">Iniciar Sesión</button>
+    </form>
+    
+    <div id="message" class="message-box"></div>
+    
+    <div class="auth-footer">
+        <p>¿No tienes una cuenta?</p>
+        <a href="/register">Registrarse aquí</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const messageDiv = document.getElementById('message');
+        try {
+            const response = await fetch('http://localhost:8080/api/sessions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                messageDiv.className = 'message-box success';
+                messageDiv.style.display = 'block';
+                messageDiv.textContent = data.message + ' - Redirigiendo...';
+                localStorage.setItem('token', data.payload.token);
+                setTimeout(() => { window.location.href = '/products'; }, 1000);
+            } else {
+                messageDiv.className = 'message-box error';
+                messageDiv.style.display = 'block';
+                messageDiv.textContent = data.message;
+            }
+        } catch (error) {
+            messageDiv.className = 'message-box error';
+            messageDiv.style.display = 'block';
+            messageDiv.textContent = 'Error en la conexión';
+            console.error('Error:', error);
+        }
+    });
+</script>

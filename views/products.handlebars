@@ -1,0 +1,165 @@
+<link rel="stylesheet" href="/css/views/products.css">
+
+<div class="content">
+    <div class="filters-container">
+        <h2>Filtros</h2>
+        <form method="GET" action="/products" class="filters-form">
+            <div class="form-group">
+                <label>Buscar:</label>
+                <input type="text" name="query" value="{{currentQuery}}" placeholder="Ej: Laptops, disponible">
+            </div>
+            
+            <div class="form-group">
+                <label>Categoría:</label>
+                <select name="category">
+                    <option value="">Todas las categorías</option>
+                    {{#each categories}}
+                    <option value="{{this}}" {{#if (eq this ../currentCategory)}}selected{{/if}}>{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Disponibilidad:</label>
+                <select name="status">
+                    <option value="">Todos</option>
+                    <option value="true" {{#if (eq currentStatus "true")}}selected{{/if}}>Disponibles</option>
+                    <option value="false" {{#if (eq currentStatus "false")}}selected{{/if}}>No disponibles</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Ordenar por precio:</label>
+                <select name="sort">
+                    <option value="">Sin ordenar</option>
+                    <option value="asc" {{#if (eq currentSort "asc")}}selected{{/if}}>Menor a mayor</option>
+                    <option value="desc" {{#if (eq currentSort "desc")}}selected{{/if}}>Mayor a menor</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Por página:</label>
+                <select name="limit">
+                    <option value="5" {{#if (eq limit 5)}}selected{{/if}}>5</option>
+                    <option value="10" {{#if (eq limit 10)}}selected{{/if}}>10</option>
+                    <option value="20" {{#if (eq limit 20)}}selected{{/if}}>20</option>
+                    <option value="50" {{#if (eq limit 50)}}selected{{/if}}>50</option>
+                </select>
+            </div>
+            
+            <div class="form-group-submit">
+                <button type="submit" class="btn-filter">Aplicar Filtros</button>
+            </div>
+        </form>
+    </div>
+
+    {{#if hasProducts}}
+        <div class="products-grid">
+            {{#each products}}
+            <div class="product-card">
+                <h3>{{this.title}}</h3>
+                <p class="product-description">{{this.description}}</p>
+                <p class="product-code"><strong>Código:</strong> <code>{{this.code}}</code></p>
+                <div class="product-price">${{this.price}}</div>
+                <span class="product-stock {{#if this.stock}}in-stock{{else}}out-of-stock{{/if}}">
+                    {{#if this.stock}}
+                        Stock: {{this.stock}} unidades
+                    {{else}}
+                        Sin stock
+                    {{/if}}
+                </span>
+                <span class="product-category">{{this.category}}</span>
+                <p class="product-status">
+                    <strong>Estado:</strong> 
+                    {{#if this.status}}
+                        <span class="status-available">Disponible</span>
+                    {{else}}
+                        <span class="status-unavailable">No disponible</span>
+                    {{/if}}
+                </p>
+                <div class="product-actions">
+                    <a href="/products/{{this._id}}" class="btn-detail">Ver Detalle</a>
+                    {{#if this.status}}
+                    {{#if this.stock}}
+                    <button onclick="addToCart('{{this._id}}')" class="btn-add-cart">Agregar</button>
+                    {{/if}}
+                    {{/if}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="pagination">
+            {{#if hasPrevPage}}
+            <a href="{{prevLink}}" class="btn-page">← Anterior</a>
+            {{else}}
+            <span class="btn-page-disabled">← Anterior</span>
+            {{/if}}
+            
+            <span class="page-indicator">Página {{page}} de {{totalPages}}</span>
+            
+            {{#if hasNextPage}}
+            <a href="{{nextLink}}" class="btn-page">Siguiente →</a>
+            {{else}}
+            <span class="btn-page-disabled">Siguiente →</span>
+            {{/if}}
+        </div>
+    {{else}}
+        <div class="no-products">
+            <p class="no-products-icon">📦</p>
+            <p class="no-products-text">No hay productos disponibles con los filtros aplicados.</p>
+            <a href="/products" class="btn-all-products">Ver todos los productos</a>
+        </div>
+    {{/if}}
+</div>
+
+<div id="notification" class="notification"></div>
+
+<script>
+    let cartId = localStorage.getItem('cartId');
+    
+    function updateCartLink() {
+        const cartLink = document.getElementById('cartLink');
+        if (cartId && cartLink) {
+            cartLink.href = `/carts/${cartId}`;
+            cartLink.style.display = 'inline-block';
+        }
+    }
+    
+    if (!cartId) {
+        fetch('/api/carts', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                cartId = data.payload._id;
+                localStorage.setItem('cartId', cartId);
+                updateCartLink();
+            }
+        })
+        .catch(err => console.error('Error creando carrito:', err));
+    } else {
+        updateCartLink();
+    }
+    
+    function addToCart(productId) {
+        if (!cartId) { showNotification('Error: No se pudo crear el carrito', 'error'); return; }
+        fetch(`/api/carts/${cartId}/product/${productId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') { showNotification('Producto agregado al carrito', 'success'); updateCartLink(); }
+            else { showNotification(data.message, 'error'); }
+        })
+        .catch(error => { console.error('Error:', error); showNotification('Error al agregar producto', 'error'); });
+    }
+    
+    function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = 'notification' + (type === 'error' ? ' error' : '');
+        notification.style.display = 'block';
+        setTimeout(() => { notification.style.display = 'none'; }, 3000);
+    }
+</script>

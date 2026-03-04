@@ -1,0 +1,137 @@
+<link rel="stylesheet" href="/css/views/realTimeProducts.css">
+
+<div class="content">
+    <div class="form-container">
+        <h2>Agregar Nuevo Producto</h2>
+        <form id="addProductForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Título:</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Código:</label>
+                    <input type="text" id="code" required>
+                </div>
+                <div class="form-group">
+                    <label>Precio:</label>
+                    <input type="number" id="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock:</label>
+                    <input type="number" id="stock" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <input type="text" id="category" required>
+                </div>
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <select id="status">
+                        <option value="true">Disponible</option>
+                        <option value="false">No disponible</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group-full">
+                <label>Descripción:</label>
+                <textarea id="description" required rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn-add-product">Agregar Producto</button>
+        </form>
+        <div id="message" class="form-message"></div>
+    </div>
+
+    <h2 class="realtime-title">Productos (Actualización en Tiempo Real)</h2>
+    <div id="productsContainer" class="products-grid">
+        {{#if hasProducts}}
+            {{#each products}}
+            <div class="product-card" data-id="{{this.id}}">
+                <h3>{{this.title}}</h3>
+                <p>{{this.description}}</p>
+                <p><strong>Código:</strong> {{this.code}}</p>
+                <div class="product-price">${{this.price}}</div>
+                <span class="product-stock {{#if this.stock}}in-stock{{else}}out-of-stock{{/if}}">
+                    {{#if this.stock}}Stock: {{this.stock}} unidades{{else}}Sin stock{{/if}}
+                </span>
+                <span class="product-category">{{this.category}}</span>
+                <p class="product-status-row">
+                    <strong>Estado:</strong> 
+                    {{#if this.status}}
+                        <span class="status-available">Disponible</span>
+                    {{else}}
+                        <span class="status-unavailable">No disponible</span>
+                    {{/if}}
+                </p>
+                <button class="delete-btn" onclick="deleteProduct({{this.id}})">Eliminar</button>
+            </div>
+            {{/each}}
+        {{else}}
+            <div class="no-products">
+                <p>No hay productos disponibles en este momento.</p>
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    
+    socket.on('products', (products) => { updateProductsList(products); });
+    
+    document.getElementById('addProductForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const productData = {
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value,
+            code: document.getElementById('code').value,
+            price: parseFloat(document.getElementById('price').value),
+            stock: parseInt(document.getElementById('stock').value),
+            category: document.getElementById('category').value,
+            status: document.getElementById('status').value === 'true'
+        };
+        socket.emit('addProduct', productData);
+    });
+    
+    socket.on('productAdded', (response) => { showMessage(response.message, 'success'); document.getElementById('addProductForm').reset(); });
+    socket.on('productDeleted', (response) => { showMessage(response.message, 'success'); });
+    socket.on('productError', (response) => { showMessage(response.message, 'error'); });
+    
+    function deleteProduct(id) {
+        if (confirm('¿Estás seguro de que deseas eliminar este producto?')) socket.emit('deleteProduct', id);
+    }
+    
+    function updateProductsList(products) {
+        const container = document.getElementById('productsContainer');
+        if (products.length === 0) {
+            container.innerHTML = `<div class="no-products"><p>No hay productos disponibles en este momento.</p></div>`;
+            return;
+        }
+        container.innerHTML = products.map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <h3>${product.title}</h3>
+                <p>${product.description}</p>
+                <p><strong>Código:</strong> ${product.code}</p>
+                <div class="product-price">$${product.price}</div>
+                <span class="product-stock ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}">
+                    ${product.stock > 0 ? `Stock: ${product.stock} unidades` : 'Sin stock'}
+                </span>
+                <span class="product-category">${product.category}</span>
+                <p class="product-status-row">
+                    <strong>Estado:</strong> 
+                    ${product.status ? '<span class="status-available">Disponible</span>' : '<span class="status-unavailable">No disponible</span>'}
+                </p>
+                <button class="delete-btn" onclick="deleteProduct(${product.id})">Eliminar</button>
+            </div>
+        `).join('');
+    }
+    
+    function showMessage(message, type) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = message;
+        messageDiv.className = 'form-message ' + type;
+        messageDiv.style.display = 'block';
+        setTimeout(() => { messageDiv.style.display = 'none'; }, 5000);
+    }
+</script>

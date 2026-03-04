@@ -1,0 +1,129 @@
+<link rel="stylesheet" href="/css/views/ProductDetail.css">
+
+<div class="content">
+    <div>
+        <a href="/products" class="back-link">← Volver a productos</a>
+    </div>
+
+    <div class="product-detail">
+        <div class="product-detail-grid">
+            <div>
+                <div class="product-image-box">
+                    <div class="product-image-placeholder">📦</div>
+                </div>
+            </div>
+
+            <div>
+                <h1>{{product.title}}</h1>
+                
+                <span class="product-category">{{product.category}}</span>
+                
+                <div class="product-price">${{product.price}}</div>
+                
+                <div>
+                    <p class="product-description-text">{{product.description}}</p>
+                </div>
+                
+                <div class="product-meta">
+                    <div class="product-meta-row">
+                        <strong>Código:</strong> 
+                        <span class="code-value">{{product.code}}</span>
+                    </div>
+                    
+                    <div class="product-meta-row">
+                        <strong>Estado:</strong> 
+                        {{#if product.status}}
+                            <span class="status-available">Disponible</span>
+                        {{else}}
+                            <span class="status-unavailable">No disponible</span>
+                        {{/if}}
+                    </div>
+                    
+                    <div class="product-meta-row">
+                        <strong>Stock:</strong> 
+                        <span class="product-stock {{#if product.stock}}in-stock{{else}}out-of-stock{{/if}}">
+                            {{#if product.stock}}
+                                {{product.stock}} unidades disponibles
+                            {{else}}
+                                Sin stock
+                            {{/if}}
+                        </span>
+                    </div>
+                </div>
+                
+                {{#if product.status}}
+                {{#if product.stock}}
+                <div class="quantity-selector">
+                    <div class="quantity-row">
+                        <label>Cantidad:</label>
+                        <div class="quantity-controls">
+                            <button onclick="decreaseQuantity()" class="btn-qty">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="{{product.stock}}" class="input-qty">
+                            <button onclick="increaseQuantity({{product.stock}})" class="btn-qty">+</button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="addToCart('{{product._id}}')" class="btn-add-cart">
+                        Agregar al Carrito
+                    </button>
+                </div>
+                {{else}}
+                <div class="alert-unavailable">
+                    <strong>Este producto no está disponible en stock</strong>
+                </div>
+                {{/if}}
+                {{else}}
+                <div class="alert-unavailable">
+                    <strong>Este producto no está disponible actualmente</strong>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="notification" class="notification"></div>
+
+<script>
+    let cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+        fetch('/api/carts', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+        .then(res => res.json())
+        .then(data => { if (data.status === 'success') { cartId = data.payload._id; localStorage.setItem('cartId', cartId); } });
+    }
+    
+    function increaseQuantity(maxStock) {
+        const input = document.getElementById('quantity');
+        if (parseInt(input.value) < maxStock) input.value = parseInt(input.value) + 1;
+    }
+    
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+    }
+    
+    async function addToCart(productId) {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        if (!cartId) { showNotification('Error: No se pudo crear el carrito', 'error'); return; }
+        try {
+            const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ quantity })
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                showNotification(quantity + ' producto(s) agregado(s) al carrito', 'success');
+                document.getElementById('quantity').value = 1;
+            } else { showNotification(data.message, 'error'); }
+        } catch (error) { console.error('Error:', error); showNotification('Error al agregar producto al carrito', 'error'); }
+    }
+    
+    function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = 'notification' + (type === 'error' ? ' error' : '');
+        notification.style.display = 'block';
+        setTimeout(() => { notification.style.display = 'none'; }, 3000);
+    }
+</script>

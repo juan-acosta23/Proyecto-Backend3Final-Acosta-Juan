@@ -1,0 +1,74 @@
+<link rel="stylesheet" href="/css/views/profile.css">
+
+<div class="content">
+    <div class="profile-wrapper">
+        <h1>Mi Perfil</h1>
+        
+        <div class="profile-card">
+            <div class="profile-grid">
+                <div class="profile-field">
+                    <label>Nombre:</label>
+                    <p>{{user.first_name}}</p>
+                </div>
+                
+                <div class="profile-field">
+                    <label>Apellido:</label>
+                    <p>{{user.last_name}}</p>
+                </div>
+                
+                <div class="profile-field">
+                    <label>Email:</label>
+                    <p>{{user.email}}</p>
+                </div>
+                
+                <div class="profile-field">
+                    <label>Edad:</label>
+                    <p>{{user.age}} años</p>
+                </div>
+                
+                <div class="profile-field">
+                    <label>Rol:</label>
+                    <p><span class="role-badge">{{user.role}}</span></p>
+                </div>
+                
+                <div class="profile-field">
+                    <label>ID de Carrito:</label>
+                    <p class="cart-id">{{user.cart._id}}</p>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <a href="/products" class="btn-products">Ver Productos</a>
+                <a href="/carts/{{user.cart._id}}" class="btn-cart">Mi Carrito</a>
+                <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </div>
+        
+        <div class="account-info">
+            <h3>Información de la Cuenta</h3>
+            <p>
+                Tu cuenta fue creada el {{user.createdAt}}. Tienes acceso completo a todas las funcionalidades del e-commerce según tu rol de {{user.role}}.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function logout() {
+        if (!confirm('¿Estás seguro de que deseas cerrar sesión?')) return;
+        try {
+            const response = await fetch('/api/sessions/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cerrar sesión');
+        }
+    }
+</script>

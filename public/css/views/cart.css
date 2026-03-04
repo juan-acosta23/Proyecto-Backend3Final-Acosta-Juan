@@ -1,0 +1,256 @@
+/* =============================================
+   cart.css
+   Estilos para la vista: cart.handlebars
+   ============================================= */
+
+/* --- Encabezado --- */
+.cart-back-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.cart-title {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+/* --- Contenedor del carrito --- */
+.cart-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-id-row {
+    margin-bottom: 20px;
+}
+
+.cart-id-row strong {
+    color: #555;
+    font-size: 1.1rem;
+}
+
+.cart-id-row code {
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    font-family: monospace;
+}
+
+/* --- Tabla --- */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.cart-table thead tr {
+    background: #667eea;
+    color: white;
+}
+
+.cart-table th {
+    padding: 15px;
+    border-bottom: 2px solid #ddd;
+}
+
+.cart-table th:first-child { text-align: left; }
+.cart-table th:last-child  { text-align: center; }
+.cart-table th:nth-child(2),
+.cart-table th:nth-child(3),
+.cart-table th:nth-child(4) { text-align: center; }
+.cart-table th:nth-child(5) { text-align: right; }
+
+.cart-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.cart-table td {
+    padding: 15px;
+}
+
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.product-icon {
+    font-size: 3rem;
+}
+
+.product-name {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.product-code-small {
+    color: #666;
+    font-family: monospace;
+}
+
+.category-badge {
+    background: #764ba2;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.price-cell {
+    font-weight: bold;
+    color: #667eea;
+    text-align: center;
+}
+
+.quantity-badge {
+    background: #f8f9fa;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.subtotal-cell {
+    text-align: right;
+    font-weight: bold;
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+.actions-cell {
+    text-align: center;
+}
+
+.btn-remove {
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Totales --- */
+.cart-summary {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.cart-total-label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.cart-total-amount {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.cart-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-clear-cart {
+    padding: 12px 30px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-right: 10px;
+}
+
+.btn-checkout {
+    padding: 12px 30px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* --- Carrito vacío --- */
+.empty-cart {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 60px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.empty-cart-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.empty-cart h2 {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.empty-cart p {
+    color: #999;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.btn-go-products {
+    display: inline-block;
+    padding: 15px 30px;
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* --- Notificación flotante --- */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+}
+
+.notification.error {
+    background: #dc3545;
+}

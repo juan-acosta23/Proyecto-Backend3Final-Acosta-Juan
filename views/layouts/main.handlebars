@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} - E-commerce</title>
+    <link rel="stylesheet" href="/css/mainHandlebars.css">
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            const cartId = localStorage.getItem('cartId');
+            const cartLink = document.getElementById('cartLink');
+            if(cartId && cartLink) {
+                cartLink.href = `/carts/${cartId}`;
+                cartLink.style.display = 'inline-block';
+            }
+            
+            const token = localStorage.getItem('token');
+            const profileLink = document.getElementById('profileLink');
+            const loginLink = document.getElementById('loginLink');
+            
+            if(token && profileLink) {
+                profileLink.style.display = 'inline-block';
+                if(loginLink) loginLink.style.display = 'none';
+            } else {
+                if(profileLink) profileLink.style.display = 'none';
+                if(loginLink) loginLink.style.display = 'inline-block';
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>{{title}}</h1>
+            <nav>
+                <a href="/products">Productos</a>
+                <a href="/realtimeproducts">Tiempo Real</a>
+                <a href="#" id="cartLink" style="display: none;">Carrito</a>
+                <a href="/profile" id="profileLink" style="display: none;">Perfil</a>
+                <a href="/login" id="loginLink">Login</a>
+            </nav>
+        </header>
+        
+        {{{body}}}
+    </div>
+</body>
+</html>

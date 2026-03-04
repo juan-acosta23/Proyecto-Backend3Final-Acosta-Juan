@@ -1,0 +1,48 @@
+{
+  "name": "pet-ecommerce-api",
+  "version": "4.1.0",
+  "description": "API para e-commerce de productos para mascotas con sistema de adopción integrado",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "mocha test/*.test.js --timeout 15000 --exit"
+  },
+  "keywords": [
+    "ecommerce",
+    "pets",
+    "adopción",
+    "mascotas",
+    "api",
+    "mongodb"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "dependencies": {
+    "@faker-js/faker": "^8.4.0",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "express-handlebars": "^7.1.2",
+    "express-rate-limit": "^8.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "mongoose-paginate-v2": "^1.8.0",
+    "nodemailer": "^7.0.11",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.6.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "twilio": "^5.11.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "chai-http": "^4.4.0",
+    "mocha": "^10.3.0",
+    "nodemon": "^3.0.1"
+  }
+}

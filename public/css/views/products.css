@@ -1,0 +1,184 @@
+/* =============================================
+   products.css
+   Estilos para la vista: products.handlebars
+   ============================================= */
+
+/* --- Filtros --- */
+.filters-container {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.filters-container h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.filters-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.filters-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: bold;
+}
+
+.filters-form .form-group input[type="text"],
+.filters-form .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.filters-form .form-group-submit {
+    display: flex;
+    align-items: flex-end;
+}
+
+.btn-filter {
+    width: 100%;
+    padding: 10px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Tarjetas de producto --- */
+.product-description {
+    font-size: 0.9rem;
+    color: #666;
+    min-height: 60px;
+}
+
+.product-code {
+    font-size: 0.85rem;
+}
+
+.status-available {
+    color: green;
+}
+
+.status-unavailable {
+    color: red;
+}
+
+.product-status {
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.product-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-detail {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-add-cart {
+    flex: 1;
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Paginación --- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pagination .btn-page {
+    padding: 12px 24px;
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.pagination .btn-page-disabled {
+    padding: 12px 24px;
+    background: #ccc;
+    color: #666;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.pagination .page-indicator {
+    padding: 12px 24px;
+    background: #f8f9fa;
+    border: 2px solid #667eea;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #667eea;
+}
+
+/* --- Sin productos --- */
+.no-products-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.no-products-text {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.btn-all-products {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* --- Notificación flotante --- */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+}
+
+.notification.error {
+    background: #dc3545;
+}

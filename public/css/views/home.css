@@ -1,0 +1,12 @@
+/* =============================================
+   home.css
+   Estilos para la vista: home.handlebars
+   ============================================= */
+
+.status-available {
+    color: green;
+}
+
+.status-unavailable {
+    color: red;
+}

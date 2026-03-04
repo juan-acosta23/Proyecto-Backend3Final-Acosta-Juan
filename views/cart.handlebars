@@ -1,0 +1,120 @@
+<link rel="stylesheet" href="/css/views/cart.css">
+
+<div class="content">
+    <div>
+        <a href="/products" class="cart-back-link">← Volver a productos</a>
+    </div>
+
+    <h1 class="cart-title">Carrito de Compras</h1>
+    
+    {{#if hasProducts}}
+        <div class="cart-container">
+            <div class="cart-id-row">
+                <strong>ID del Carrito:</strong>
+                <code>{{cartId}}</code>
+            </div>
+
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-icon">📦</div>
+                                <div>
+                                    <strong class="product-name">{{this.title}}</strong>
+                                    <br>
+                                    <small class="product-code-small">{{this.code}}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;">
+                            <span class="category-badge">{{this.category}}</span>
+                        </td>
+                        <td class="price-cell">${{this.price}}</td>
+                        <td style="text-align:center;">
+                            <span class="quantity-badge">{{this.quantity}}</span>
+                        </td>
+                        <td class="subtotal-cell">${{this.subtotal}}</td>
+                        <td class="actions-cell">
+                            <button onclick="removeProduct('{{this._id}}')" class="btn-remove">Eliminar</button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+
+            <div class="cart-summary">
+                <div class="cart-total-row">
+                    <span class="cart-total-label">Total del Carrito:</span>
+                    <span class="cart-total-amount">${{total}}</span>
+                </div>
+                <div class="cart-buttons">
+                    <button onclick="clearCart()" class="btn-clear-cart">Vaciar Carrito</button>
+                    <button onclick="checkout()" class="btn-checkout">Finalizar Compra</button>
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <div class="empty-cart">
+            <div class="empty-cart-icon">🛒</div>
+            <h2>Tu carrito está vacío</h2>
+            <p>Agrega productos para comenzar a comprar</p>
+            <a href="/products" class="btn-go-products">Ver Productos</a>
+        </div>
+    {{/if}}
+</div>
+
+<div id="notification" class="notification"></div>
+
+<script>
+    const cartId = '{{cartId}}';
+
+    async function removeProduct(productId) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) return;
+        try {
+            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                method: 'DELETE', headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                showNotification('Producto eliminado del carrito', 'success');
+                setTimeout(() => { window.location.reload(); }, 1000);
+            } else { showNotification(data.message, 'error'); }
+        } catch (error) { console.error('Error:', error); showNotification('Error al eliminar producto', 'error'); }
+    }
+
+    async function clearCart() {
+        if (!confirm('¿Estás seguro de que deseas vaciar todo el carrito?')) return;
+        try {
+            const response = await fetch(`/api/carts/${cartId}`, {
+                method: 'DELETE', headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                showNotification('Carrito vaciado', 'success');
+                setTimeout(() => { window.location.reload(); }, 1000);
+            } else { showNotification(data.message, 'error'); }
+        } catch (error) { console.error('Error:', error); showNotification('Error al vaciar carrito', 'error'); }
+    }
+
+    function checkout() { alert('Proceso de compra - Próximamente disponible'); }
+
+    function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = 'notification' + (type === 'error' ? ' error' : '');
+        notification.style.display = 'block';
+        setTimeout(() => { notification.style.display = 'none'; }, 3000);
+    }
+</script>

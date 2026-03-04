@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="/css/views/my-tickets.css">
+
+<div class="content">
+    <div class="tickets-header">
+        <h1>Mis Compras</h1>
+        <a href="/products" class="btn-keep-shopping">Seguir Comprando</a>
+    </div>
+    
+    {{#if hasTickets}}
+        {{#each tickets}}
+        <div class="ticket-card">
+            <div class="ticket-card-header">
+                <div class="ticket-info">
+                    <h3>Ticket {{this.code}}</h3>
+                    <p class="ticket-date">📅 {{formatDate this.purchase_datetime}}</p>
+                </div>
+                <div>
+                    {{#if (eq this.status 'completed')}}<span class="status-badge completed">✓ Completada</span>{{/if}}
+                    {{#if (eq this.status 'partial')}}<span class="status-badge partial">⚠ Parcial</span>{{/if}}
+                    {{#if (eq this.status 'pending')}}<span class="status-badge pending">⏳ Pendiente</span>{{/if}}
+                    {{#if (eq this.status 'cancelled')}}<span class="status-badge cancelled">✗ Cancelada</span>{{/if}}
+                </div>
+            </div>
+            
+            <div class="ticket-products">
+                <h4>Productos:</h4>
+                {{#each this.products}}
+                <div class="ticket-product-row">
+                    <div>
+                        <strong class="ticket-product-title">{{this.product.title}}</strong>
+                        <br>
+                        <small class="ticket-product-code">{{this.product.code}}</small>
+                    </div>
+                    <div class="ticket-product-price">${{this.price}}</div>
+                    <div class="ticket-product-qty">× {{this.quantity}}</div>
+                    <div class="ticket-product-subtotal">${{this.subtotal}}</div>
+                </div>
+                {{/each}}
+            </div>
+            
+            <div class="ticket-total-row">
+                <span class="ticket-total-label">Total: </span>
+                <span class="ticket-total-amount">{{formatMoney this.amount}}</span>
+            </div>
+        </div>
+        {{/each}}
+    {{else}}
+        <div class="empty-tickets">
+            <div class="empty-tickets-icon">🎫</div>
+            <h2>No tienes compras todavía</h2>
+            <p>Explora nuestro catálogo y realiza tu primera compra</p>
+            <a href="/products" class="btn-go-products">Ver Productos</a>
+        </div>
+    {{/if}}
+</div>
