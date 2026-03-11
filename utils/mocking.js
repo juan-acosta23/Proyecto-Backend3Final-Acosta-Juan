@@ -10,7 +10,7 @@ class MockingService {
         const randomSpecies = species[Math.floor(Math.random() * species.length)];
         
         return {
-            name: faker.animal.petName(),
+            name: faker.person.firstName(),
             species: randomSpecies,
             birthDate: faker.date.past({ years: 10 }),
             adopted: false,

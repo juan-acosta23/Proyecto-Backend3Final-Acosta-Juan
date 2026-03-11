@@ -9,7 +9,7 @@ paths:
       tags:
         - Users
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       responses:
         "200":
           description: Lista de usuarios obtenida correctamente.
@@ -48,7 +48,7 @@ paths:
       tags:
         - Users
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
         - $ref: '#/components/parameters/UserId'
       responses:
@@ -85,7 +85,7 @@ paths:
       tags:
         - Users
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
         - $ref: '#/components/parameters/UserId'
       requestBody:
@@ -134,7 +134,7 @@ paths:
       tags:
         - Users
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
         - $ref: '#/components/parameters/UserId'
       responses:
@@ -173,7 +173,7 @@ paths:
       tags:
         - Users
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
         - $ref: '#/components/parameters/UserId'
       requestBody:
@@ -224,14 +224,10 @@ paths:
 
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: |
-        JWT obtenido al hacer login en `POST /api/sessions/login`.
-        Se puede pasar como header `Authorization: Bearer <token>` o
-        automáticamente como cookie `jwt=<token>`.
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
 
   parameters:
     UserId:

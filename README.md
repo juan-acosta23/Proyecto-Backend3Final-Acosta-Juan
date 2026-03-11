@@ -9,11 +9,9 @@ API REST completa para e-commerce de productos para mascotas con sistema de adop
 
 ## 🐳 Imagen Docker en Docker Hub
 
-La imagen del proyecto está disponible públicamente en Docker Hub:
-
-> **📦 `docker pull juanacosta/pet-ecommerce-api:latest`**
+> **📦 `docker pull juanignacioacosta/pet-ecommerce-api:latest`**
 >
-> 🔗 **[https://hub.docker.com/r/juanacosta/pet-ecommerce-api](https://hub.docker.com/r/juanacosta/pet-ecommerce-api)**
+> 🔗 **[https://hub.docker.com/r/juanignacioacosta/pet-ecommerce-api](https://hub.docker.com/r/juanignacioacosta/pet-ecommerce-api)**
 
 ---
 
@@ -22,7 +20,7 @@ La imagen del proyecto está disponible públicamente en Docker Hub:
 ### Opción 1 — Desde Docker Hub (recomendado)
 
 ```bash
-docker pull juanacosta/pet-ecommerce-api:latest
+docker pull juanignacioacosta/pet-ecommerce-api:latest
 
 docker run -d \
   --name pet-api \
@@ -30,7 +28,7 @@ docker run -d \
   -e MONGODB_URI="mongodb+srv://<usuario>:<password>@cluster.mongodb.net/petstore" \
   -e JWT_SECRET="tu_jwt_secret_muy_seguro" \
   -e NODE_ENV="production" \
-  juanacosta/pet-ecommerce-api:latest
+  juanignacioacosta/pet-ecommerce-api:latest
 ```
 
 La API estará disponible en: **`http://localhost:8080`**

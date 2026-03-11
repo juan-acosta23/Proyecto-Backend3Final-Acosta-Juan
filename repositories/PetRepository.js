@@ -28,13 +28,13 @@ class PetRepository {
         }
     }
 
-    async findById(petId) {
-        try {
-            return await Pet.findById(petId).populate('owner', '-password');
-        } catch (error) {
-            throw new Error(`Error al buscar mascota: ${error.message}`);
-        }
+async findById(petId) {
+    try {
+        return await Pet.findById(petId).populate('owner', '-password');
+    } catch (error) {
+        throw error;
     }
+}
 
     async create(petData) {
         try {

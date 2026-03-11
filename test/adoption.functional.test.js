@@ -39,8 +39,12 @@ async function getAuthCookie(email, password) {
         .send({ email, password });
 
     if (res.headers['set-cookie']) {
-        const jwtCookie = res.headers['set-cookie'].find(c => c.startsWith('jwt='));
-        if (jwtCookie) return jwtCookie.split(';')[0]; // "jwt=TOKEN"
+        const jwtCookie = res.headers['set-cookie'].find(c => c.startsWith('token='));
+        if (jwtCookie) return jwtCookie.split(';')[0];
+    }
+    // Fallback: usar Bearer token del body
+    if (res.body?.payload?.token) {
+        return `Bearer ${res.body.payload.token}`;
     }
     return null;
 }
