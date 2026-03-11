@@ -7,15 +7,15 @@ API REST completa para e-commerce de productos para mascotas con sistema de adop
 
 ---
 
-## 🐳 Imagen Docker en Docker Hub
+## Imagen Docker en Docker Hub
 
-> **📦 `docker pull juanignacioacosta/pet-ecommerce-api:latest`**
+> **`docker pull juanignacioacosta/pet-ecommerce-api:latest`**
 >
-> 🔗 **[https://hub.docker.com/r/juanignacioacosta/pet-ecommerce-api](https://hub.docker.com/r/juanignacioacosta/pet-ecommerce-api)**
+> **[https://hub.docker.com/r/juanignacioacosta/pet-ecommerce-api](https://hub.docker.com/r/juanignacioacosta/pet-ecommerce-api)**
 
 ---
 
-## 🚀 Ejecutar con Docker
+## Ejecutar con Docker
 
 ### Opción 1 — Desde Docker Hub (recomendado)
 
@@ -69,7 +69,7 @@ docker inspect --format='{{.State.Health.Status}}' pet-api
 
 ---
 
-## ⚙️ Variables de entorno
+## Variables de entorno
 
 Crea un archivo `.env` basado en `.env.example`:
 
@@ -84,7 +84,7 @@ EMAIL_PASSWORD=tu_app_password_gmail
 
 ---
 
-## 📚 Documentación Swagger
+## Documentación Swagger
 
 Una vez iniciado, la documentación interactiva está en:
 
@@ -94,7 +94,7 @@ http://localhost:8080/api/docs
 
 ---
 
-## 🧪 Tests funcionales
+## Tests funcionales
 
 ```bash
 npm install
@@ -103,11 +103,9 @@ npm test
 
 Suites incluidas:
 - **`adoption.functional.test.js`** — 8 suites / 30+ casos cubriendo todos los endpoints de `/api/pets`
-- **`pets.functional.test.js`** — Suite complementaria
-
 ---
 
-## 📡 Endpoints principales
+## Endpoints principales
 
 ### Autenticación
 
@@ -145,7 +143,7 @@ Suites incluidas:
 
 ---
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 ```
 ├── app.js               # Entrada
@@ -162,17 +160,13 @@ Suites incluidas:
 
 ---
 
-## 🔑 Credenciales por defecto (solo desarrollo)
+## Credenciales por defecto (solo desarrollo)
 
 | Email | Password | Rol |
 |-------|----------|-----|
 | `admin@ecommerce.com` | `admin123` | admin |
 | `user@ecommerce.com` | `user123` | user |
 
-> ⚠️ Cambiar en entornos de producción.
+> Cambiar en entornos de producción.
 
 ---
-
-## 📄 Licencia
-
-MIT — Juan Acosta, 2024 | Coderhouse Backend III

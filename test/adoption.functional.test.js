@@ -22,16 +22,11 @@ chai.use(chaiHttp);
 
 const app = require('../app');
 
-// ─── IDs y tokens reutilizables entre suites ──────────────────────────────────
 let testPetId = null;
 let adoptedPetId = null;
 let adminCookie = null;
 let userCookie = null;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-/**
- * Hace login y devuelve la cookie "jwt=TOKEN" o null si falla.
- */
 async function getAuthCookie(email, password) {
     const res = await chai
         .request(app)
@@ -42,14 +37,13 @@ async function getAuthCookie(email, password) {
         const jwtCookie = res.headers['set-cookie'].find(c => c.startsWith('token='));
         if (jwtCookie) return jwtCookie.split(';')[0];
     }
-    // Fallback: usar Bearer token del body
+
     if (res.body?.payload?.token) {
         return `Bearer ${res.body.payload.token}`;
     }
     return null;
 }
 
-// ─── Setup / Teardown ─────────────────────────────────────────────────────────
 before(async function () {
     this.timeout(20000);
 
@@ -61,8 +55,6 @@ before(async function () {
         await mongoose.connect(uri);
         console.log('✓ Conectado a MongoDB de tests');
     }
-
-    // Obtener tokens para los tests que requieren autenticación
     adminCookie = await getAuthCookie('admin@ecommerce.com', 'admin123');
     userCookie  = await getAuthCookie('user@ecommerce.com',  'user123');
 
@@ -71,7 +63,6 @@ before(async function () {
 });
 
 after(async function () {
-    // Limpia solo las mascotas creadas por estos tests
     try {
         await mongoose.connection.collection('pets').deleteMany({ name: /^TEST_/ });
         console.log('✓ Mascotas de prueba eliminadas');
@@ -80,9 +71,6 @@ after(async function () {
     }
 });
 
-// =============================================================================
-// SUITE 1: GET /api/pets
-// =============================================================================
 describe('GET /api/pets - Listar todas las mascotas', function () {
     this.timeout(10000);
 
@@ -142,9 +130,6 @@ describe('GET /api/pets - Listar todas las mascotas', function () {
     });
 });
 
-// =============================================================================
-// SUITE 2: GET /api/pets/available
-// =============================================================================
 describe('GET /api/pets/available - Mascotas disponibles para adopción', function () {
     this.timeout(10000);
 
@@ -181,9 +166,6 @@ describe('GET /api/pets/available - Mascotas disponibles para adopción', functi
     });
 });
 
-// =============================================================================
-// SUITE 3: GET /api/pets/species/:species
-// =============================================================================
 describe('GET /api/pets/species/:species - Mascotas por especie', function () {
     this.timeout(10000);
 
@@ -221,9 +203,6 @@ describe('GET /api/pets/species/:species - Mascotas por especie', function () {
     });
 });
 
-// =============================================================================
-// SUITE 4: POST /api/pets  (Crear mascota - requiere admin)
-// =============================================================================
 describe('POST /api/pets - Crear nueva mascota', function () {
     this.timeout(15000);
 
@@ -273,8 +252,6 @@ describe('POST /api/pets - Crear nueva mascota', function () {
         expect(res.body.payload.name).to.equal(petValida.name);
         expect(res.body.payload.species).to.equal(petValida.species);
         expect(res.body.payload.adopted).to.equal(false);
-
-        // Guardar ID para tests posteriores
         testPetId = res.body.payload._id;
     });
 
@@ -288,7 +265,6 @@ describe('POST /api/pets - Crear nueva mascota', function () {
 
         if (res.status === 201) {
             expect(res.body.payload.adopted).to.equal(false);
-            // Registrar para limpieza
         }
     });
 
@@ -315,9 +291,6 @@ describe('POST /api/pets - Crear nueva mascota', function () {
     });
 });
 
-// =============================================================================
-// SUITE 5: GET /api/pets/:pid  (Obtener mascota por ID)
-// =============================================================================
 describe('GET /api/pets/:pid - Obtener mascota por ID', function () {
     this.timeout(10000);
 
@@ -346,9 +319,6 @@ describe('GET /api/pets/:pid - Obtener mascota por ID', function () {
     });
 });
 
-// =============================================================================
-// SUITE 6: PUT /api/pets/:pid  (Actualizar mascota - requiere admin)
-// =============================================================================
 describe('PUT /api/pets/:pid - Actualizar mascota', function () {
     this.timeout(15000);
 
@@ -419,9 +389,6 @@ describe('PUT /api/pets/:pid - Actualizar mascota', function () {
     });
 });
 
-// =============================================================================
-// SUITE 7: POST /api/pets/:pid/adopt  (Adoptar mascota - requiere auth)
-// =============================================================================
 describe('POST /api/pets/:pid/adopt - Adoptar mascota', function () {
     this.timeout(15000);
 
@@ -448,12 +415,10 @@ describe('POST /api/pets/:pid/adopt - Adoptar mascota', function () {
             .request(app)
             .post('/api/pets/id-invalido/adopt')
             .set('Cookie', adminCookie);
-        // El error puede venir del cast antes de llegar al repository
         expect(res.status).to.be.oneOf([400, 404, 500]);
     });
 
     it('Debe retornar 200 y marcar la mascota como adoptada', async function () {
-        // Crear una mascota de prueba para adoptar
         if (!adminCookie) return this.skip();
 
         const createRes = await chai
@@ -478,7 +443,6 @@ describe('POST /api/pets/:pid/adopt - Adoptar mascota', function () {
 
     it('Debe retornar 400 si la mascota ya fue adoptada', async function () {
         if (!adminCookie || !adoptedPetId) return this.skip();
-        // Intentar adoptar la misma mascota dos veces
         const res = await chai
             .request(app)
             .post(`/api/pets/${adoptedPetId}/adopt`)
@@ -489,7 +453,6 @@ describe('POST /api/pets/:pid/adopt - Adoptar mascota', function () {
     });
 
     it('El body debe incluir la propiedad "message" de felicitación', async function () {
-        // Crear otra mascota de prueba
         if (!adminCookie) return this.skip();
 
         const createRes = await chai
@@ -510,9 +473,6 @@ describe('POST /api/pets/:pid/adopt - Adoptar mascota', function () {
     });
 });
 
-// =============================================================================
-// SUITE 8: DELETE /api/pets/:pid  (Eliminar mascota - requiere admin)
-// =============================================================================
 describe('DELETE /api/pets/:pid - Eliminar mascota', function () {
     this.timeout(15000);
 
@@ -570,7 +530,6 @@ describe('DELETE /api/pets/:pid - Eliminar mascota', function () {
     it('Tras eliminar, la mascota ya no debe existir (GET retorna 404)', async function () {
         if (!adminCookie) return this.skip();
 
-        // Crear mascota temporal para verificar eliminación
         const createRes = await chai
             .request(app)
             .post('/api/pets')
@@ -580,13 +539,11 @@ describe('DELETE /api/pets/:pid - Eliminar mascota', function () {
         if (createRes.status !== 201) return this.skip();
         const tempId = createRes.body.payload._id;
 
-        // Eliminar
         await chai
             .request(app)
             .delete(`/api/pets/${tempId}`)
             .set('Cookie', adminCookie);
 
-        // Verificar que ya no existe
         const getRes = await chai.request(app).get(`/api/pets/${tempId}`);
         expect(getRes).to.have.status(404);
     });
